@@ -19,8 +19,8 @@ const PlugIcon = () => (
 );
 
 interface DevicesState {
-    "light one": "ON" | "OFF";
-    "light two": "ON" | "OFF";
+    light1: "ON" | "OFF";
+    light2: "ON" | "OFF";
     fan: "ON" | "OFF";
     plug: "ON" | "OFF";
 }
@@ -40,8 +40,8 @@ export default function Dashboard() {
                 const data = snapshot.val();
                 if (data) {
                     setDevices({
-                        "light one": data["light one"]?.state || "OFF",
-                        "light two": data["light two"]?.state || "OFF",
+                        light1: data.light1?.state || "OFF",
+                        light2: data.light2?.state || "OFF",
                         fan: data.fan?.state || "OFF",
                         plug: data.plug?.state || "OFF",
                     });
@@ -72,8 +72,8 @@ export default function Dashboard() {
     const handleToggleAll = async (newState: "ON" | "OFF") => {
         // Optimistic UI update
         const newDevicesState = {
-            "light one": newState,
-            "light two": newState,
+            light1: newState,
+            light2: newState,
             fan: newState,
             plug: newState,
         };
@@ -86,7 +86,7 @@ export default function Dashboard() {
             }
 
             // Push each change individually
-            const keys = ["light one", "light two", "fan", "plug"];
+            const keys = ["light1", "light2", "fan", "plug"];
             await Promise.all(
                 keys.map((id) => set(ref(db, `devices/${id}/state`), newState))
             );
@@ -175,8 +175,8 @@ export default function Dashboard() {
                         }, timeMs);
                     }}>
                         <select name="device" className="bg-gray-800 border border-gray-700 text-white text-sm rounded-xl px-4 py-2 focus:ring-green-500 focus:border-green-500 block">
-                            <option value="light one">Light One</option>
-                            <option value="light two">Light Two</option>
+                            <option value="light1">Light 1</option>
+                            <option value="light2">Light 2</option>
                             <option value="fan">Ceiling Fan</option>
                             <option value="plug">Smart Plug</option>
                         </select>
@@ -190,8 +190,8 @@ export default function Dashboard() {
                 </div>
 
                 <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <DeviceCard id="light one" name="Light One" state={devices?.["light one"] || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
-                    <DeviceCard id="light two" name="Light Two" state={devices?.["light two"] || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
+                    <DeviceCard id="light1" name="Light 1" state={devices?.light1 || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
+                    <DeviceCard id="light2" name="Light 2" state={devices?.light2 || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
                     <DeviceCard id="fan" name="Ceiling Fan" state={devices?.fan || "OFF"} onToggle={handleToggle} icon={<FanIcon />} />
                     <DeviceCard id="plug" name="Smart Plug" state={devices?.plug || "OFF"} onToggle={handleToggle} icon={<PlugIcon />} />
                 </main>
