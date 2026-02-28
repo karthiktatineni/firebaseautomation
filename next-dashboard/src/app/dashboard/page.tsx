@@ -69,6 +69,33 @@ export default function Dashboard() {
         }
     };
 
+    const handleToggleAll = async (newState: "ON" | "OFF") => {
+        // Optimistic UI update
+        const newDevicesState = {
+            light1: newState,
+            light2: newState,
+            fan: newState,
+            plug: newState,
+        };
+
+        setDevices(newDevicesState);
+
+        try {
+            if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(50);
+            }
+
+            // Push each change individually
+            const keys = ["light1", "light2", "fan", "plug"];
+            await Promise.all(
+                keys.map((id) => set(ref(db, `devices/${id}/state`), newState))
+            );
+        } catch (error) {
+            console.error("Failed to update Firebase toggles:", error);
+            // Re-fetch triggers will naturally clean up mismatches on next DB onValue ping anyway
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
@@ -101,6 +128,21 @@ export default function Dashboard() {
                         </button>
                     </div>
                 </header>
+
+                <div className="flex gap-4 mb-8">
+                    <button
+                        onClick={() => handleToggleAll("ON")}
+                        className="flex-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 py-3 rounded-2xl font-semibold transition-all shadow-[0_0_20px_rgba(34,197,94,0.1)] hover:shadow-[0_0_25px_rgba(34,197,94,0.2)]"
+                    >
+                        Turn All ON
+                    </button>
+                    <button
+                        onClick={() => handleToggleAll("OFF")}
+                        className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 py-3 rounded-2xl font-semibold transition-all"
+                    >
+                        Turn All OFF
+                    </button>
+                </div>
 
                 <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <DeviceCard id="light1" name="Light 1" state={devices?.light1 || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
