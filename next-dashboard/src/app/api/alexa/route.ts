@@ -26,7 +26,7 @@ if (!admin.apps.length) {
     });
 }
 
-const ALLOWED_DEVICES = new Set(["light", "fan", "relay1", "relay2"]);
+const ALLOWED_DEVICES = new Set(["light1", "light2", "fan", "plug"]);
 
 export async function POST(req: Request) {
     try {

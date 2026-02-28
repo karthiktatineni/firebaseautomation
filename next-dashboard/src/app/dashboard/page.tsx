@@ -19,10 +19,10 @@ const PlugIcon = () => (
 );
 
 interface DevicesState {
-    light: "ON" | "OFF";
+    light1: "ON" | "OFF";
+    light2: "ON" | "OFF";
     fan: "ON" | "OFF";
-    relay1: "ON" | "OFF";
-    relay2: "ON" | "OFF";
+    plug: "ON" | "OFF";
 }
 
 export default function Dashboard() {
@@ -40,10 +40,10 @@ export default function Dashboard() {
                 const data = snapshot.val();
                 if (data) {
                     setDevices({
-                        light: data.light?.state || "OFF",
+                        light1: data.light1?.state || "OFF",
+                        light2: data.light2?.state || "OFF",
                         fan: data.fan?.state || "OFF",
-                        relay1: data.relay1?.state || "OFF",
-                        relay2: data.relay2?.state || "OFF",
+                        plug: data.plug?.state || "OFF",
                     });
                 }
                 setLoading(false);
@@ -103,10 +103,10 @@ export default function Dashboard() {
                 </header>
 
                 <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <DeviceCard id="light" name="Main Light" state={devices?.light || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
+                    <DeviceCard id="light1" name="Light 1" state={devices?.light1 || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
+                    <DeviceCard id="light2" name="Light 2" state={devices?.light2 || "OFF"} onToggle={handleToggle} icon={<LightIcon />} />
                     <DeviceCard id="fan" name="Ceiling Fan" state={devices?.fan || "OFF"} onToggle={handleToggle} icon={<FanIcon />} />
-                    <DeviceCard id="relay1" name="Smart Plug 1" state={devices?.relay1 || "OFF"} onToggle={handleToggle} icon={<PlugIcon />} />
-                    <DeviceCard id="relay2" name="Smart Plug 2" state={devices?.relay2 || "OFF"} onToggle={handleToggle} icon={<PlugIcon />} />
+                    <DeviceCard id="plug" name="Smart Plug" state={devices?.plug || "OFF"} onToggle={handleToggle} icon={<PlugIcon />} />
                 </main>
             </div>
         </div>
