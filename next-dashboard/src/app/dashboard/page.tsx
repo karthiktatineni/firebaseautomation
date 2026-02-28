@@ -129,7 +129,7 @@ export default function Dashboard() {
                     </div>
                 </header>
 
-                <div className="flex gap-4 mb-8">
+                <div className="flex gap-4 mb-4">
                     <button
                         onClick={() => handleToggleAll("ON")}
                         className="flex-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 py-3 rounded-2xl font-semibold transition-all shadow-[0_0_20px_rgba(34,197,94,0.1)] hover:shadow-[0_0_25px_rgba(34,197,94,0.2)]"
@@ -142,6 +142,51 @@ export default function Dashboard() {
                     >
                         Turn All OFF
                     </button>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl mb-8">
+                    <h3 className="text-lg font-bold mb-4 text-white">Smart Timers (Experimental)</h3>
+                    <p className="text-sm text-gray-400 mb-4">Schedule a device to turn on or off at a specific time today.</p>
+                    <form className="flex gap-3 flex-wrap" onSubmit={(e) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.currentTarget);
+                        const deviceId = formData.get('device') as string;
+                        const action = formData.get('action') as "ON" | "OFF";
+                        const time = formData.get('time') as string;
+
+                        if (!deviceId || !action || !time) return;
+
+                        const [hours, minutes] = time.split(':');
+                        const now = new Date();
+                        const scheduledTime = new Date();
+                        scheduledTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+
+                        let timeMs = scheduledTime.getTime() - now.getTime();
+
+                        // If time is in the past, schedule for tomorrow
+                        if (timeMs < 0) {
+                            timeMs += 86400000;
+                        }
+
+                        alert(`Timer set! ${deviceId} will turn ${action} in ${Math.round(timeMs / 60000)} minutes.`);
+
+                        setTimeout(() => {
+                            handleToggle(deviceId, action);
+                        }, timeMs);
+                    }}>
+                        <select name="device" className="bg-gray-800 border border-gray-700 text-white text-sm rounded-xl px-4 py-2 focus:ring-green-500 focus:border-green-500 block">
+                            <option value="light1">Light 1</option>
+                            <option value="light2">Light 2</option>
+                            <option value="fan">Ceiling Fan</option>
+                            <option value="plug">Smart Plug</option>
+                        </select>
+                        <select name="action" className="bg-gray-800 border border-gray-700 text-white text-sm rounded-xl px-4 py-2 focus:ring-green-500 focus:border-green-500 block">
+                            <option value="ON">Turn ON</option>
+                            <option value="OFF">Turn OFF</option>
+                        </select>
+                        <input name="time" type="time" required className="bg-gray-800 border border-gray-700 text-white text-sm rounded-xl px-4 py-2 focus:ring-green-500 focus:border-green-500 lock" />
+                        <button type="submit" className="bg-green-600 hover:bg-green-500 px-6 py-2 rounded-xl text-black font-semibold text-sm transition-colors">Set Timer</button>
+                    </form>
                 </div>
 
                 <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
