@@ -16,23 +16,30 @@ export async function POST(req: Request) {
     try {
         const { device, state } = await req.json();
 
-        const map: Record<string, string> = {
+        const db = admin.database();
+
+        // Single device control
+        const singleMap: Record<string, string> = {
             fan: "fan",
             light1: "light1",
             light2: "light2",
             plug: "plug",
         };
 
-        if (!map[device]) {
-            return NextResponse.json({ status: "Invalid device" }, { status: 400 });
+        if (singleMap[device]) {
+            await db.ref(`devices/${singleMap[device]}/state`).set(state);
+            return NextResponse.json({ status: "Success" });
         }
 
-        await admin
-            .database()
-            .ref(`devices/${map[device]}/state`)
-            .set(state);
+        // Group control
+        if (device === "lights") {
+            await db.ref("devices/light1/state").set(state);
+            await db.ref("devices/light2/state").set(state);
+            return NextResponse.json({ status: "All lights updated" });
+        }
 
-        return NextResponse.json({ status: "Success" });
+        return NextResponse.json({ status: "Invalid device" }, { status: 400 });
+
     } catch (err) {
         console.error("Siri API error:", err);
         return NextResponse.json({ status: "Error" }, { status: 500 });
