@@ -4,12 +4,12 @@
 #include <EEPROM.h>
 
 // ===================== WIFI =====================
-#define WIFI_SSID     "SwapnaHome"
-#define WIFI_PASSWORD "NoPassword$2022"
+#define WIFI_SSID     "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD "WIFI_PASSWORD"
 
 // ===================== FIREBASE =====================
-#define API_KEY       "AIzaSyC9DPirMZj1My_ArmvbJvrwxBhlDzlLslM"
-#define DATABASE_URL  "https://home-7d635-default-rtdb.firebaseio.com/"
+#define API_KEY       "YOUR_API_KEY"
+#define DATABASE_URL  "YOUR_DATABASE_URL"
 
 FirebaseData fbdo;
 FirebaseAuth auth;
